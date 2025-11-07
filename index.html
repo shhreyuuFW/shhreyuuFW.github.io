@@ -113,11 +113,30 @@
     <section id="dashboard" class="dashboard-section section">
         <div class="container">
             <h2 class="section-title">Dashboard</h2>
+            
+            <!-- Password Protection -->
+            <div id="dashboardLogin" class="dashboard-login">
+                <div class="login-box">
+                    <h3>Dashboard Access</h3>
+                    <p>Please enter the password to access the dashboard</p>
+                    <form id="dashboardLoginForm">
+                        <input type="password" id="dashboardPassword" placeholder="Enter Password" required>
+                        <button type="submit" class="btn btn-primary">Access Dashboard</button>
+                    </form>
+                    <p class="login-hint" style="font-size: 0.9rem; margin-top: 10px; color: var(--text-light); opacity: 0.7;">
+                        Default password: admin123
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dashboard Content (hidden by default) -->
+            <div id="dashboardContent" style="display: none;">
             <div class="dashboard-tabs">
                 <button class="tab-btn active" data-tab="projects-tab">Projects</button>
                 <button class="tab-btn" data-tab="skills-tab">Skills</button>
                 <button class="tab-btn" data-tab="blog-tab">Blog</button>
                 <button class="tab-btn" data-tab="about-tab">About</button>
+                <button class="btn btn-secondary" onclick="logoutDashboard()" style="margin-left: auto;">Logout</button>
             </div>
             
             <!-- Projects Dashboard -->
@@ -129,6 +148,14 @@
                         <input type="text" id="projectTitle" placeholder="Project Title" required>
                         <textarea id="projectDescription" placeholder="Project Description" required></textarea>
                         <input type="text" id="projectTech" placeholder="Technologies (comma-separated)">
+                        <input type="url" id="projectImage" placeholder="Project Image URL (optional)">
+                        <select id="projectStatus">
+                            <option value="">Select Status</option>
+                            <option value="completed">Completed</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="planned">Planned</option>
+                        </select>
+                        <input type="date" id="projectDate" placeholder="Completion/Start Date (optional)">
                         <input type="url" id="projectLink" placeholder="Project Link (optional)">
                         <input type="url" id="projectGithub" placeholder="GitHub Link (optional)">
                         <div class="form-buttons">
@@ -150,7 +177,10 @@
                     <form id="skillForm" class="content-form">
                         <input type="hidden" id="skillId">
                         <input type="text" id="skillName" placeholder="Skill Name" required>
+                        <textarea id="skillDescription" placeholder="Skill Description (optional)" rows="3"></textarea>
                         <input type="number" id="skillLevel" placeholder="Proficiency Level (1-100)" min="1" max="100" required>
+                        <input type="number" id="skillYears" placeholder="Years of Experience (optional)" min="0" max="50" step="0.5">
+                        <input type="url" id="skillIcon" placeholder="Skill Icon/Logo URL (optional)">
                         <select id="skillCategory" required>
                             <option value="">Select Category</option>
                             <option value="frontend">Frontend</option>
@@ -197,12 +227,17 @@
                     <h3>Update About Section</h3>
                     <form id="aboutForm" class="content-form">
                         <textarea id="aboutDescription" placeholder="About Me Description" required rows="6"></textarea>
+                        <h4 style="margin-top: 20px; color: var(--bright-red);">Statistics</h4>
+                        <input type="number" id="statYearsExperience" placeholder="Years of Experience" min="0" max="100">
+                        <input type="number" id="statProjectsCompleted" placeholder="Projects Completed" min="0" max="10000">
+                        <input type="number" id="statHappyClients" placeholder="Happy Clients" min="0" max="10000">
                         <div class="form-buttons">
                             <button type="submit" class="btn btn-primary">Update About</button>
                         </div>
                     </form>
                 </div>
             </div>
+            </div> <!-- End dashboardContent -->
         </div>
     </section>
 

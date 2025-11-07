@@ -3,6 +3,7 @@ let projects = [];
 let skills = [];
 let blogPosts = [];
 let aboutText = '';
+let aboutStats = { yearsExperience: 5, projectsCompleted: 50, happyClients: 100 };
 
 // Load data from localStorage on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderBlogPosts();
     updateAboutSection();
     setupDashboard();
+    setupDashboardAuth();
     animateStats();
     setupScrollAnimations();
 });
@@ -23,6 +25,7 @@ function loadData() {
     skills = JSON.parse(localStorage.getItem('portfolio_skills')) || getDefaultSkills();
     blogPosts = JSON.parse(localStorage.getItem('portfolio_blog')) || getDefaultBlogPosts();
     aboutText = localStorage.getItem('portfolio_about') || getDefaultAbout();
+    aboutStats = JSON.parse(localStorage.getItem('portfolio_stats')) || { yearsExperience: 5, projectsCompleted: 50, happyClients: 100 };
 }
 
 // Save data to localStorage
@@ -30,6 +33,9 @@ function saveData() {
     localStorage.setItem('portfolio_projects', JSON.stringify(projects));
     localStorage.setItem('portfolio_skills', JSON.stringify(skills));
     localStorage.setItem('portfolio_blog', JSON.stringify(blogPosts));
+    localStorage.setItem('portfolio_about', aboutText);
+    localStorage.setItem('portfolio_stats', JSON.stringify(aboutStats));
+}
     localStorage.setItem('portfolio_about', aboutText);
 }
 
@@ -42,18 +48,21 @@ function getDefaultProjects() {
             description: 'A modern, responsive portfolio website built with HTML, CSS, and JavaScript',
             tech: ['HTML', 'CSS', 'JavaScript'],
             link: '',
-            github: ''
+            github: '',
+            image: '',
+            status: 'completed',
+            date: ''
         }
     ];
 }
 
 function getDefaultSkills() {
     return [
-        { id: Date.now(), name: 'JavaScript', level: 90, category: 'frontend' },
-        { id: Date.now() + 1, name: 'HTML/CSS', level: 95, category: 'frontend' },
-        { id: Date.now() + 2, name: 'React', level: 85, category: 'frontend' },
-        { id: Date.now() + 3, name: 'Node.js', level: 80, category: 'backend' },
-        { id: Date.now() + 4, name: 'Git', level: 85, category: 'tools' }
+        { id: Date.now(), name: 'JavaScript', level: 90, category: 'frontend', description: '', years: 0, icon: '' },
+        { id: Date.now() + 1, name: 'HTML/CSS', level: 95, category: 'frontend', description: '', years: 0, icon: '' },
+        { id: Date.now() + 2, name: 'React', level: 85, category: 'frontend', description: '', years: 0, icon: '' },
+        { id: Date.now() + 3, name: 'Node.js', level: 80, category: 'backend', description: '', years: 0, icon: '' },
+        { id: Date.now() + 4, name: 'Git', level: 85, category: 'tools', description: '', years: 0, icon: '' }
     ];
 }
 
@@ -136,7 +145,12 @@ function renderProjects() {
 
     projectsGrid.innerHTML = projects.map(project => `
         <div class="project-card">
-            <h3 class="project-title">${escapeHtml(project.title)}</h3>
+            ${project.image ? `<div class="project-image" style="width: 100%; height: 200px; background: url('${escapeHtml(project.image)}') center/cover; border-radius: 8px; margin-bottom: 15px;"></div>` : ''}
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                <h3 class="project-title" style="margin: 0;">${escapeHtml(project.title)}</h3>
+                ${project.status ? `<span class="project-status" style="padding: 4px 12px; background: ${getStatusColor(project.status)}; border-radius: 12px; font-size: 0.85rem;">${escapeHtml(project.status)}</span>` : ''}
+            </div>
+            ${project.date ? `<p style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 10px;">${escapeHtml(project.date)}</p>` : ''}
             <p class="project-description">${escapeHtml(project.description)}</p>
             <div class="project-tech">
                 ${project.tech.map(tech => `<span class="tech-tag">${escapeHtml(tech)}</span>`).join('')}
@@ -147,6 +161,15 @@ function renderProjects() {
             </div>
         </div>
     `).join('');
+}
+
+function getStatusColor(status) {
+    const colors = {
+        'completed': '#28a745',
+        'in-progress': '#ffc107',
+        'planned': '#6c757d'
+    };
+    return colors[status] || '#6c757d';
 }
 
 // Render Skills
@@ -162,13 +185,18 @@ function renderSkills() {
     skillsGrid.innerHTML = skills.map(skill => `
         <div class="skill-card">
             <div class="skill-header">
+                ${skill.icon ? `<img src="${escapeHtml(skill.icon)}" alt="${escapeHtml(skill.name)}" style="width: 24px; height: 24px; margin-right: 10px;">` : ''}
                 <span class="skill-name">${escapeHtml(skill.name)}</span>
                 <span class="skill-level">${skill.level}%</span>
             </div>
+            ${skill.description ? `<p style="font-size: 0.9rem; opacity: 0.8; margin: 8px 0;">${escapeHtml(skill.description)}</p>` : ''}
             <div class="skill-bar">
                 <div class="skill-progress" style="width: ${skill.level}%"></div>
             </div>
-            <span class="skill-category">${escapeHtml(skill.category)}</span>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                <span class="skill-category">${escapeHtml(skill.category)}</span>
+                ${skill.years ? `<span style="font-size: 0.85rem; opacity: 0.7;">${skill.years} years</span>` : ''}
+            </div>
         </div>
     `).join('');
 }
@@ -200,13 +228,10 @@ function renderBlogPosts() {
     }).join('');
 }
 
-// Show full blog post
+// Show full blog post - Opens in new tab
 function showBlogPost(id) {
-    const post = blogPosts.find(p => p.id === id);
-    if (!post) return;
-
-    const date = new Date(post.date);
-    alert(`${post.title}\n\n${date.toLocaleDateString()}\n\n${post.content}\n\nTags: ${post.tags.join(', ')}`);
+    // Open the blog post in a new tab with the post ID as a parameter
+    window.open(`blog-post.html?id=${id}`, '_blank');
 }
 
 // Update About Section
@@ -214,6 +239,14 @@ function updateAboutSection() {
     const aboutTextElement = document.getElementById('aboutText');
     if (aboutTextElement && aboutText) {
         aboutTextElement.textContent = aboutText;
+    }
+    
+    // Update stat targets from storage
+    const statNumbers = document.querySelectorAll('.stat-number');
+    if (statNumbers.length >= 3) {
+        statNumbers[0].setAttribute('data-target', aboutStats.yearsExperience);
+        statNumbers[1].setAttribute('data-target', aboutStats.projectsCompleted);
+        statNumbers[2].setAttribute('data-target', aboutStats.happyClients);
     }
 }
 
@@ -319,12 +352,15 @@ function setupProjectForm() {
         const tech = document.getElementById('projectTech').value.split(',').map(t => t.trim()).filter(t => t);
         const link = document.getElementById('projectLink').value;
         const github = document.getElementById('projectGithub').value;
+        const image = document.getElementById('projectImage').value;
+        const status = document.getElementById('projectStatus').value;
+        const date = document.getElementById('projectDate').value;
 
         if (id) {
             // Update existing project
             const index = projects.findIndex(p => p.id == id);
             if (index !== -1) {
-                projects[index] = { id: parseInt(id), title, description, tech, link, github };
+                projects[index] = { id: parseInt(id), title, description, tech, link, github, image, status, date };
             }
         } else {
             // Add new project
@@ -334,7 +370,10 @@ function setupProjectForm() {
                 description,
                 tech,
                 link,
-                github
+                github,
+                image,
+                status,
+                date
             });
         }
 
@@ -353,6 +392,9 @@ function clearProjectForm() {
     document.getElementById('projectTech').value = '';
     document.getElementById('projectLink').value = '';
     document.getElementById('projectGithub').value = '';
+    document.getElementById('projectImage').value = '';
+    document.getElementById('projectStatus').value = '';
+    document.getElementById('projectDate').value = '';
 }
 
 function editProject(id) {
@@ -365,6 +407,9 @@ function editProject(id) {
     document.getElementById('projectTech').value = project.tech.join(', ');
     document.getElementById('projectLink').value = project.link || '';
     document.getElementById('projectGithub').value = project.github || '';
+    document.getElementById('projectImage').value = project.image || '';
+    document.getElementById('projectStatus').value = project.status || '';
+    document.getElementById('projectDate').value = project.date || '';
 
     // Scroll to form
     document.querySelector('#projects-tab').scrollIntoView({ behavior: 'smooth' });
@@ -389,21 +434,27 @@ function setupSkillForm() {
 
         const id = document.getElementById('skillId').value;
         const name = document.getElementById('skillName').value;
+        const description = document.getElementById('skillDescription').value;
         const level = parseInt(document.getElementById('skillLevel').value);
+        const years = parseFloat(document.getElementById('skillYears').value) || 0;
+        const icon = document.getElementById('skillIcon').value;
         const category = document.getElementById('skillCategory').value;
 
         if (id) {
             // Update existing skill
             const index = skills.findIndex(s => s.id == id);
             if (index !== -1) {
-                skills[index] = { id: parseInt(id), name, level, category };
+                skills[index] = { id: parseInt(id), name, description, level, years, icon, category };
             }
         } else {
             // Add new skill
             skills.push({
                 id: Date.now(),
                 name,
+                description,
                 level,
+                years,
+                icon,
                 category
             });
         }
@@ -419,7 +470,10 @@ function setupSkillForm() {
 function clearSkillForm() {
     document.getElementById('skillId').value = '';
     document.getElementById('skillName').value = '';
+    document.getElementById('skillDescription').value = '';
     document.getElementById('skillLevel').value = '';
+    document.getElementById('skillYears').value = '';
+    document.getElementById('skillIcon').value = '';
     document.getElementById('skillCategory').value = '';
 }
 
@@ -429,7 +483,10 @@ function editSkill(id) {
 
     document.getElementById('skillId').value = skill.id;
     document.getElementById('skillName').value = skill.name;
+    document.getElementById('skillDescription').value = skill.description || '';
     document.getElementById('skillLevel').value = skill.level;
+    document.getElementById('skillYears').value = skill.years || '';
+    document.getElementById('skillIcon').value = skill.icon || '';
     document.getElementById('skillCategory').value = skill.category;
 
     // Scroll to form
@@ -522,15 +579,27 @@ function deleteBlogPost(id) {
 function setupAboutForm() {
     const form = document.getElementById('aboutForm');
     const textarea = document.getElementById('aboutDescription');
+    const statYears = document.getElementById('statYearsExperience');
+    const statProjects = document.getElementById('statProjectsCompleted');
+    const statClients = document.getElementById('statHappyClients');
     
     if (!form || !textarea) return;
 
-    // Load current about text
+    // Load current about text and stats
     textarea.value = aboutText;
+    if (statYears) statYears.value = aboutStats.yearsExperience;
+    if (statProjects) statProjects.value = aboutStats.projectsCompleted;
+    if (statClients) statClients.value = aboutStats.happyClients;
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         aboutText = textarea.value;
+        
+        // Update stats
+        aboutStats.yearsExperience = parseInt(statYears.value) || 5;
+        aboutStats.projectsCompleted = parseInt(statProjects.value) || 50;
+        aboutStats.happyClients = parseInt(statClients.value) || 100;
+        
         saveData();
         updateAboutSection();
         alert('About section updated successfully!');
@@ -621,4 +690,46 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Dashboard Authentication
+function setupDashboardAuth() {
+    const loginForm = document.getElementById('dashboardLoginForm');
+    const loginSection = document.getElementById('dashboardLogin');
+    const contentSection = document.getElementById('dashboardContent');
+    
+    if (!loginForm || !loginSection || !contentSection) return;
+    
+    // Check if user is already authenticated
+    const isAuthenticated = sessionStorage.getItem('dashboard_auth') === 'true';
+    
+    if (isAuthenticated) {
+        loginSection.style.display = 'none';
+        contentSection.style.display = 'block';
+    }
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('dashboardPassword').value;
+        const storedPassword = localStorage.getItem('dashboard_password') || 'admin123';
+        
+        if (password === storedPassword) {
+            // Authentication successful
+            sessionStorage.setItem('dashboard_auth', 'true');
+            loginSection.style.display = 'none';
+            contentSection.style.display = 'block';
+            document.getElementById('dashboardPassword').value = '';
+        } else {
+            alert('Incorrect password. Please try again.');
+            document.getElementById('dashboardPassword').value = '';
+        }
+    });
+}
+
+function logoutDashboard() {
+    if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('dashboard_auth');
+        location.reload();
+    }
 }

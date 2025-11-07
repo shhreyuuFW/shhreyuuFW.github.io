@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Post">
+    <title>Blog Post | shhreyuuFW</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .blog-post-container {
+            max-width: 900px;
+            margin: 100px auto 50px;
+            padding: 40px 20px;
+        }
+        
+        .blog-post-header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--bright-red);
+            padding-bottom: 20px;
+        }
+        
+        .blog-post-title {
+            font-size: 2.5rem;
+            color: var(--bright-red);
+            margin-bottom: 15px;
+        }
+        
+        .blog-post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-light);
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+        
+        .blog-post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .blog-post-tags {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(220, 20, 60, 0.3);
+        }
+        
+        .blog-post-tags h3 {
+            margin-bottom: 15px;
+            color: var(--bright-red);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: var(--maroon);
+            color: var(--off-white);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: var(--bright-red);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">shhreyuuFW</a>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#projects" class="nav-link">Projects</a>
+                <a href="index.html#skills" class="nav-link">Skills</a>
+                <a href="index.html#blog" class="nav-link active">Blog</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Post Content -->
+    <div class="blog-post-container">
+        <div class="blog-post-header">
+            <h1 class="blog-post-title" id="postTitle">Loading...</h1>
+            <div class="blog-post-meta">
+                <span id="postDate">...</span>
+                <span id="postReadTime">...</span>
+            </div>
+        </div>
+        
+        <div class="blog-post-content" id="postContent">
+            Loading blog post...
+        </div>
+        
+        <div class="blog-post-tags">
+            <h3>Tags</h3>
+            <div class="blog-tags" id="postTags">
+                <!-- Tags will be loaded here -->
+            </div>
+        </div>
+        
+        <a href="index.html#blog" class="back-link">← Back to Blog</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 shhreyuuFW. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">GitHub</a>
+                <a href="#" class="social-link">LinkedIn</a>
+                <a href="#" class="social-link">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get blog post ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = parseInt(urlParams.get('id'));
+
+        // Load blog post data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlogPost(postId);
+        });
+
+        function loadBlogPost(id) {
+            // Get blog posts from localStorage
+            const blogPosts = JSON.parse(localStorage.getItem('portfolio_blog')) || [];
+            const post = blogPosts.find(p => p.id === id);
+
+            if (post) {
+                // Update page title
+                document.title = `${post.title} | shhreyuuFW`;
+                
+                // Display post data
+                document.getElementById('postTitle').textContent = post.title;
+                
+                const date = new Date(post.date);
+                document.getElementById('postDate').textContent = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                // Calculate read time (approximately 200 words per minute)
+                const wordCount = post.content.split(/\s+/).length;
+                const readTime = Math.ceil(wordCount / 200);
+                document.getElementById('postReadTime').textContent = `${readTime} min read`;
+                
+                document.getElementById('postContent').textContent = post.content;
+                
+                // Display tags
+                const tagsContainer = document.getElementById('postTags');
+                if (post.tags && post.tags.length > 0) {
+                    tagsContainer.innerHTML = post.tags.map(tag => 
+                        `<span class="blog-tag">${escapeHtml(tag)}</span>`
+                    ).join('');
+                } else {
+                    tagsContainer.innerHTML = '<p style="opacity: 0.7;">No tags</p>';
+                }
+            } else {
+                // Post not found
+                document.getElementById('postTitle').textContent = 'Blog Post Not Found';
+                document.getElementById('postDate').textContent = '';
+                document.getElementById('postReadTime').textContent = '';
+                document.getElementById('postContent').textContent = 'The blog post you are looking for does not exist.';
+                document.getElementById('postTags').innerHTML = '';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
