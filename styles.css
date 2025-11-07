@@ -839,3 +839,81 @@ a {
 .empty-state p {
     font-size: 1.1rem;
 }
+
+/* Dashboard Login */
+.dashboard-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: 2rem;
+}
+
+.login-box {
+    background: rgba(26, 26, 26, 0.9);
+    border: 2px solid var(--bright-red);
+    border-radius: 15px;
+    padding: 3rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-box h3 {
+    color: var(--bright-red);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.login-box p {
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.login-box input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(220, 20, 60, 0.3);
+    border-radius: 8px;
+    color: var(--off-white);
+    font-size: 1rem;
+}
+
+.login-box input[type="password"]:focus {
+    outline: none;
+    border-color: var(--bright-red);
+}
+
+.login-box button {
+    width: 100%;
+}
+
+/* Project Status Badge */
+.project-status {
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+/* Skill Icon in Header */
+.skill-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.skill-header img {
+    object-fit: contain;
+}
+
+/* Dashboard Tabs with Logout */
+.dashboard-tabs {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(220, 20, 60, 0.2);
+}
