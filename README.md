@@ -4,11 +4,20 @@ A modern, minimal portfolio website with dynamic content management capabilities
 
 ## Features
 
-- **About Me**: Personal introduction with animated statistics
-- **Projects**: Showcase your work with descriptions, technologies, and links
-- **Skills**: Display your technical skills with progress bars and categories
-- **Blog**: Write and publish blog posts with tags and timestamps
-- **Dashboard**: Full content management system to add, edit, and delete content
+- **About Me**: Personal introduction with editable animated statistics
+- **Projects**: Showcase your work with detailed information including:
+  - Images, descriptions, and technology tags
+  - Status indicators (Completed, In Progress, Planned)
+  - Project dates and links
+- **Skills**: Display your technical skills with enhanced details:
+  - Progress bars and categories
+  - Skill descriptions and years of experience
+  - Custom icons/logos
+- **Blog**: Write and publish blog posts that open in dedicated pages with:
+  - Full content view in new tab
+  - Read time calculation
+  - Tags and timestamps
+- **Dashboard**: Password-protected content management system to add, edit, and delete content
 - **Responsive Design**: Works perfectly on all devices
 - **Modern Animations**: Smooth transitions and engaging effects
 - **Client-Side Storage**: All data stored in browser's localStorage (perfect for GitHub Pages)
@@ -30,10 +39,13 @@ Simply open `index.html` in a browser or visit the GitHub Pages URL.
 ### Managing Content
 
 1. Navigate to the **Dashboard** section (last item in navigation)
-2. Use the tabs to switch between managing Projects, Skills, Blog posts, and About section
-3. Fill in the forms and click Save to add or update content
-4. Use Edit/Delete buttons to manage existing content
-5. All changes are saved automatically in your browser's localStorage
+2. Enter the dashboard password (default: `admin123`, stored in localStorage as 'dashboard_password')
+3. Use the tabs to switch between managing Projects, Skills, Blog posts, and About section
+4. Fill in the forms and click Save to add or update content
+5. Use Edit/Delete buttons to manage existing content
+6. All changes are saved automatically in your browser's localStorage
+
+**Note**: The dashboard password protection is client-side only and provides basic access control. For true security, implement server-side authentication.
 
 ### Deploying to GitHub Pages
 
