@@ -36,8 +36,6 @@ function saveData() {
     localStorage.setItem('portfolio_about', aboutText);
     localStorage.setItem('portfolio_stats', JSON.stringify(aboutStats));
 }
-    localStorage.setItem('portfolio_about', aboutText);
-}
 
 // Default data
 function getDefaultProjects() {
